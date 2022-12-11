@@ -16,23 +16,19 @@ st.title("Taking pictures with oak camera")
 pipeline = dai.Pipeline()
 
 # Define sources and outputs
-monoLeft = pipeline.create(dai.node.MonoCamera)
-monoRight = pipeline.create(dai.node.MonoCamera)
-xoutLeft = pipeline.create(dai.node.XLinkOut)
-xoutRight = pipeline.create(dai.node.XLinkOut)
-
-xoutLeft.setStreamName('left')
-xoutRight.setStreamName('right')
+ccenter = pipeline.create(dai.node.ColorCamera)
+xoutcenter = pipeline.create(dai.node.XLinkOut)
+xoutcenter.setStreamName('center')
 
 # Properties
-monoLeft.setBoardSocket(dai.CameraBoardSocket.LEFT)
-monoLeft.setResolution(dai.MonoCameraProperties.SensorResolution.THE_480_P)
-monoRight.setBoardSocket(dai.CameraBoardSocket.RIGHT)
-monoRight.setResolution(dai.MonoCameraProperties.SensorResolution.THE_480_P)
+ccenter.setPreviewSize(300, 300)
+ccenter.setBoardSocket(dai.CameraBoardSocket.RGB)
+ccenter.setResolution(dai.ColorCameraProperties.SensorResolution.THE_1080_P)
+ccenter.setInterleaved(False)
+ccenter.setColorOrder(dai.ColorCameraProperties.ColorOrder.RGB)
 
 # Linking
-monoRight.out.link(xoutRight.input)
-monoLeft.out.link(xoutLeft.input)
+ccenter.video.link(xoutcenter.input)
 #########################################################################################################################
 
 online = st.sidebar.checkbox("Initialise camera")
@@ -64,22 +60,17 @@ if online and select_folder:
     with dai.Device(pipeline, usb2Mode=True) as device:
         img_counter = 0
         # Output queues will be used to get the grayscale frames from the outputs defined above
-        qLeft = device.getOutputQueue(name="left", maxSize=4, blocking=False)
-        qRight = device.getOutputQueue(name="right", maxSize=4, blocking=False)
+        qcenter = device.getOutputQueue(name="center", maxSize=4, blocking=False)
         while True:
-            # Webcam feed
-            #########################################################################################################################
-            # Instead of get (blocking), we use tryGet (non-blocking) which will return the available data or None otherwise
-            inLeft = qLeft.get().getCvFrame()
-            inLeft_Colour = cv2.cvtColor(inLeft, cv2.COLOR_GRAY2RGB)
-            # inRight = qRight.get().getCvFrame()
-            # inRight_Colour = cv2.cvtColor(inRight, cv2.COLOR_GRAY2RGB)
-            #########################################################################################################################
-            stframe.image(inLeft_Colour,channels = 'RGB', use_column_width=True)
+            # Cam feed
+            c_cam = qcenter.get().getCvFrame()
+            c_cam_rgb = cv2.cvtColor(c_cam, cv2.COLOR_BGR2RGB)
+            # rescaled_c_cam = rescale_frame(c_cam, width_res=640, height_res=400)
+            stframe.image(c_cam_rgb, channels = 'RGB', use_column_width=True)
 
             if taking_pics and st.session_state.count > previous:
                 img_name = folder_name + "/Frame_{}.jpg".format(st.session_state.count)
-                cv2.imwrite(img_name, inLeft_Colour)
+                cv2.imwrite(img_name, c_cam)
                 print("{} written!".format(img_name))
                 st.success(':white_check_mark: {} written!'.format(img_name))
                 previous = st.session_state.count

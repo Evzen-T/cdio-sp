@@ -89,37 +89,32 @@ def parse_yolo_region(input_image, outputs):
     ibox = list(boxes[indices])
     return input_image, ibox 
 
-#########################################################################################################################
+#############################################################################
 # Create pipeline
 pipeline = dai.Pipeline()
 
 # Define sources and outputs
-monoLeft = pipeline.create(dai.node.MonoCamera)
-monoRight = pipeline.create(dai.node.MonoCamera)
-xoutLeft = pipeline.create(dai.node.XLinkOut)
-xoutRight = pipeline.create(dai.node.XLinkOut)
-
-xoutLeft.setStreamName('left')
-xoutRight.setStreamName('right')
+ccenter = pipeline.create(dai.node.ColorCamera)
+xoutcenter = pipeline.create(dai.node.XLinkOut)
+xoutcenter.setStreamName('center')
 
 # Properties
-monoLeft.setBoardSocket(dai.CameraBoardSocket.LEFT)
-monoLeft.setResolution(dai.MonoCameraProperties.SensorResolution.THE_480_P)
-monoRight.setBoardSocket(dai.CameraBoardSocket.RIGHT)
-monoRight.setResolution(dai.MonoCameraProperties.SensorResolution.THE_480_P)
+ccenter.setPreviewSize(300, 300)
+ccenter.setBoardSocket(dai.CameraBoardSocket.RGB)
+ccenter.setResolution(dai.ColorCameraProperties.SensorResolution.THE_1080_P)
+ccenter.setInterleaved(False)
+ccenter.setColorOrder(dai.ColorCameraProperties.ColorOrder.RGB)
 
 # Linking
-monoRight.out.link(xoutRight.input)
-monoLeft.out.link(xoutLeft.input)
-#########################################################################################################################
-
+ccenter.video.link(xoutcenter.input)
+#############################################################################
 st.set_option('deprecation.showfileUploaderEncoding', False)
-##############################################################
+####################################################
 Inference = st.sidebar.button("Inference")
 pt_weights = st.sidebar.checkbox("Pytorch weights")
 ir_weights = st.sidebar.checkbox("Openvino weights")
 blob_weights = st.sidebar.checkbox("Blob weights")
-##############################################################
+####################################################
 #To rescale the frame of the video capture
 def rescale_frame(frame, width_res=640, height_res=400):
     width = int(frame.shape[1] * width_res/1280)
@@ -145,21 +140,12 @@ if Inference:
     with dai.Device(pipeline, usb2Mode=True) as device:
         img_counter = 0
         # Output queues will be used to get the grayscale frames from the outputs defined above
-        qLeft = device.getOutputQueue(name="left", maxSize=4, blocking=False)
-        qRight = device.getOutputQueue(name="right", maxSize=4, blocking=False)
+        qcenter = device.getOutputQueue(name="center", maxSize=4, blocking=False)
         while True:
-            # Webcam feed
-            #########################################################################################################################
-            # Instead of get (blocking), we use tryGet (non-blocking) which will return the available data or None otherwise
-            inLeft = qLeft.get().getCvFrame()
-            inLeft_Colour = cv2.cvtColor(inLeft, cv2.COLOR_GRAY2RGB)
-
-            # inRight = qRight.get().getCvFrame()
-            # inRight_Colour = cv2.cvtColor(inRight, cv2.COLOR_GRAY2RGB)
-            
-            rescaled_inLeft = rescale_frame(inLeft_Colour, width_res=640, height_res=400)
-            # rescaled_inRight = rescale_frame(inRight_Colour, width_res=640, height_res=400)
-            #########################################################################################################################
+            # Cam feed
+            c_cam = qcenter.get().getCvFrame()
+            c_cam_rgb = cv2.cvtColor(c_cam, cv2.COLOR_BGR2RGB)
+            rescaled_c_cam = rescale_frame(c_cam_rgb, width_res=640, height_res=400)
 
             if ir_weights:
                 #VINO config
@@ -179,7 +165,7 @@ if Inference:
                 #     classes = f.read().rstrip('\n').split('\n')
 
                 fnum += 1
-                in_frame        = letterbox(rescaled_inLeft.copy(), (w, h))
+                in_frame        = letterbox(rescaled_c_cam.copy(), (w, h))
                 in_frame        = in_frame.transpose((2, 0, 1))  
                 in_frame        = in_frame.reshape((n, c, h, w))
                 start_time      = time()
@@ -199,7 +185,7 @@ if Inference:
                 model = get_model()
 
                 # Make decisions
-                results = model(rescaled_inLeft.copy())
+                results = model(rescaled_c_cam.copy())
                 squeezed = np.squeeze(results.render())
                 
                 stframe.image(squeezed,channels = 'RGB', use_column_width=True)
@@ -208,7 +194,7 @@ if Inference:
                 if exec_net.requests[request_id].wait(-1) == 0: 
                     output  = exec_net.requests[request_id].output_blobs 
                     for layer_name, out_blob in output.items():
-                        imcv1, ibox = parse_yolo_region(rescaled_inLeft.copy(), out_blob.buffer)
+                        imcv1, ibox = parse_yolo_region(rescaled_c_cam.copy(), out_blob.buffer)
                     parsing_time = time() - start_time
                             
                 if ibox is not None:
@@ -218,14 +204,11 @@ if Inference:
                     label = "Frame = %d, NO DETECTION" % fnum
                     cv2.putText(imcv1, label, (20, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 0, 255), 2)
                 
-                imcv1_rz = cv2.resize(imcv1, (vk_width, vk_height))
-                final = cv2.cvtColor(imcv1_rz, cv2.COLOR_BGR2RGB)
+                # imcv1_rz = cv2.resize(imcv1, (vk_width, vk_height))
+                final = cv2.cvtColor(imcv1, cv2.COLOR_BGR2RGB)
                 stframe2.image(final,channels = 'RGB')
             if blob_weights:
-                stframe3.image(rescaled_inLeft,channels = 'RGB')
+                stframe3.image(rescaled_c_cam,channels = 'RGB')
 
-            currTime = time()
-            fps = 1 / (currTime - prevTime)
-            prevTime = currTime
-            kpi1_text.write(f"<h1 style='text-align: left; color: red;'>{int(fps)}</h1>", unsafe_allow_html=True)
-            kpi2_text.write(f"<h1 style='text-align: left; color: red;'>{vk_width}</h1>", unsafe_allow_html=True)
+            # kpi1_text.write(f"<h1 style='text-align: left; color: red;'>{int(fps)}</h1>", unsafe_allow_html=True)
+            # kpi2_text.write(f"<h1 style='text-align: left; color: red;'>{vk_width}</h1>", unsafe_allow_html=True)
