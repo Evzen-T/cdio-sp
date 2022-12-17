@@ -6,7 +6,7 @@ import numpy as np
 import cv2
 import torch
 
-st.set_page_config(page_title='Inferencing with Images', page_icon='./media/vilota.jpg', layout='wide')
+st.set_page_config(page_title='cdio-sp', page_icon='./media/E-logo.png', layout='centered')
 ############################################################################################################################
 comparison2 = st.sidebar.button("Compare weights")
 pt_weight = st.sidebar.checkbox("pt weights", value=False)

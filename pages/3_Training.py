@@ -1,7 +1,7 @@
 import streamlit as st
 import subprocess
 
-st.set_page_config(page_title='Training', page_icon='./media/E-logo.png', layout='centered')
+st.set_page_config(page_title='cdio-sp', page_icon='./media/E-logo.png', layout='centered')
 
 text_kpi, num_kpi = st.columns(2)
 with text_kpi:

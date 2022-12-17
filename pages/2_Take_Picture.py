@@ -8,7 +8,7 @@ from time import time
 import cv2
 import depthai as dai
 
-st.set_page_config(page_title='Take picture', page_icon='./media/E-logo.png', layout='centered')
+st.set_page_config(page_title='cdio-sp', page_icon='./media/E-logo.png', layout='centered')
 st.title("Taking pictures with oak camera")
 
 #########################################################################################################################

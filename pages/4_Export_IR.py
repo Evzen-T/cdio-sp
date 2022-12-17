@@ -1,7 +1,7 @@
 import streamlit as st
 import subprocess, os
 
-st.set_page_config(page_title='Export IR', page_icon='./media/E-logo.png', layout='centered')
+st.set_page_config(page_title='cdio-sp', page_icon='./media/E-logo.png', layout='centered')
 
 yv5_path = st.text_input("Insert path to yolov5", '/home/user/yolov5')
 weights_path = st.text_input("Insert path to weights", '/home/user/best.pt')

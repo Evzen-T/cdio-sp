@@ -4,7 +4,7 @@ sys.path.append(os.getcwd())
 from yolo.export_yolov5 import YoloV5Exporter
 from pathlib import Path
 
-st.set_page_config(page_title='Blob Converter', page_icon='./media/E-logo.png', layout='centered')
+st.set_page_config(page_title='cdio-sp', page_icon='./media/E-logo.png', layout='centered')
 
 conversion = './media/pt_2_blob.png'
 st.image(conversion, width=640)
