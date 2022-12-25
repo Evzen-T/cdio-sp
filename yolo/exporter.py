@@ -85,7 +85,7 @@ class Exporter:
             bin=str(self.f_bin.resolve()),#as_posix(),
             data_type="FP16",
             shaves=6,
-            version="2021.4",
+            version="2022.1",
             use_cache=False,
             output_dir=self.conv_path.resolve()
         )
