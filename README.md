@@ -2,12 +2,6 @@
 
 ![SP logo](./media/sp-logo.png)
 
-## **What am I trying to achieve?**
-
-- A easy to understand step by step guide
-
-- Create a fast & simple method to implement object detection
-
 ## **What is used in this project**
 
 - Hardware
@@ -24,18 +18,10 @@
     - Jupyter notebook
     - Shell scripting
 
-## **Problems & Solutions**
-
-- Problems
-    - P1: Long range remote Drone Navigations
-    - P2: Door security
-    - P3: Intruders
-
-- Solutions
-    - S1: Sign detection (For directions)
-    - S2: Facial recognition
-    - S3: CCTV with object detection
-
+## **Trained models**
+- Sign detection
+- everyday objects
+- facial detection
 
 ## **Object detection workflow**
 1. Decide object to detect
@@ -107,18 +93,14 @@ streamlit run 1_About_app.py
         - [yolov5n](https://github.com/ultralytics/yolov5/releases/download/v6.2/yolov5n.pt)
         - [yolov5s](https://github.com/ultralytics/yolov5/releases/download/v6.2/yolov5s.pt)
 
-4. **Export IR**
-    - Exports **pytorch** weights to **IR**
-
-5. **Blob Converter**
+4. **Blob Converter**
     - Exports **pytorch** weights to **onnx** > **IR** > **blob** 
 
-6. **Inferencing With Camera**
-    - Run inference with oak d lite (Luxonis cameras)
+5. **Inferencing With Camera**
+    - Run inference with **oak d lite (Luxonis cameras)**
     - Inference with pytorch weights obtained from **Training**
-    - Inference with IR weights obtained from **Export IR**
     - Inference with blob weights obtained from **Blob Converter**
 
-7. **Inferencing With Images**
-    - Run image inference with **test datasets/random images**
+6. **Inferencing With Images**
+    - Run image inference with **images**
     - Inference with pytorch weights obtained from **Training**
