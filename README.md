@@ -33,28 +33,11 @@
 7. Inferencing (Camera/video/image)
 
 ## **Dependencies**
-
-Streamlit
 ```
 python3 -m venv <insert virtual name>
 source <virtual name>/bin/activate
 
-pip install streamlit
-pip install opencv-python
-pip install blobconverter
-```
-
-Annotation Tool (Bounding boxes) - labelImg ([Github repo](https://github.com/heartexlabs/labelImg))
-```bash
-# To download labelimg
-git clone https://github.com/heartexlabs/labelImg.git
-pip3 install pyqt5 lxml --upgrade
-cd labelImg
-pyrcc5 -o libs/resources.py resources.qrc
-
-# To run labelimg
-cd labelImg
-python3 labelimg.py
+pip install -r requirements.txt
 ```
 
 Annotation Tool (Segmentation) - label-studios ([Github repo](https://github.com/heartexlabs/label-studio))
@@ -66,10 +49,11 @@ pip3 install label-studio # Requires Python >=3.7 <=3.9
 label-studio # Will start the server at http://localhost:8080
 ```
 
-Training - YoloV5([Github repo](https://github.com/ultralytics/yolov5))
+For Training - YoloV5([Github repo](https://github.com/ultralytics/yolov5))
 ```bash
 git clone https://github.com/ultralytics/yolov5.git
 cd yolov5
+source <virtual name>/bin/activate
 pip install -r requirements.txt
 ```
 ## **How to run streamlit webui?**
@@ -89,9 +73,8 @@ streamlit run 1_About_app.py
 
 3. **Training**
     - Use for training annotated datasets with yolov5
-    - pretrained weights that can be used
+    - pretrained weights used
         - [yolov5n](https://github.com/ultralytics/yolov5/releases/download/v6.2/yolov5n.pt)
-        - [yolov5s](https://github.com/ultralytics/yolov5/releases/download/v6.2/yolov5s.pt)
 
 4. **Blob Converter**
     - Exports **pytorch** weights to **onnx** > **IR** > **blob** 
