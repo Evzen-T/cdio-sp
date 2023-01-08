@@ -1,10 +1,5 @@
 import streamlit as st
-import numpy as np
-import psutil
 import subprocess
-import os, signal
-from time import time
-
 import cv2
 import depthai as dai
 
@@ -21,7 +16,6 @@ xoutcenter = pipeline.create(dai.node.XLinkOut)
 xoutcenter.setStreamName('center')
 
 # Properties
-ccenter.setPreviewSize(300, 300)
 ccenter.setBoardSocket(dai.CameraBoardSocket.RGB)
 ccenter.setResolution(dai.ColorCameraProperties.SensorResolution.THE_1080_P)
 ccenter.setInterleaved(False)
