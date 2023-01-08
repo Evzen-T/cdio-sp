@@ -1,12 +1,12 @@
 {
     "model": {
-        "xml": "/home/evzen/projects/cdio-sp/weights/yolov5n.xml",
-        "bin": "/home/evzen/projects/cdio-sp/weights/yolov5n.bin"
+        "xml": "yolov5n.xml",
+        "bin": "yolov5n.bin"
     },
     "nn_config": {
         "output_format": "detection",
         "NN_family": "YOLO",
-        "input_size": "640x416",
+        "input_size": "640x640",
         "NN_specific_metadata": {
             "classes": 80,
             "coordinates": 4,
