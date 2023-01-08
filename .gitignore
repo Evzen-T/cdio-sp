@@ -1,5 +1,10 @@
 # Virtual environment
-/virtual
+virtual
 
 # ipynb Checkpoint
 .ipynb_checkpoints
+
+#pycache
+__pycache__
+yolo/__pycache__
+*.pyc
