@@ -1,0 +1,5 @@
+train: ./dataset/train_dt/images
+val: ./dataset/train_dt/images
+
+nc: 10
+class: []
