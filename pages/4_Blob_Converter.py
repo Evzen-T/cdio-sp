@@ -15,7 +15,7 @@ def whchange():
 col1, col2 = st.columns(2)
 with col1:
     dpath = st.text_input('Insert download path', '/home/user/path')
-    fpath = st.text_input('Insert file path', '/home/user/path/filename.pt', on_change=fpchange)
+    fpath = st.text_input('Insert file name', 'best.pt', on_change=fpchange)
 with col2:
     wshape = st.number_input('Insert width', min_value=0, max_value=1280, value=640, step=32)
     hshape = st.number_input('Insert height', min_value=0, max_value=800, value=416, step=32)
