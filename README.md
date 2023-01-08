@@ -19,9 +19,9 @@
     - Shell scripting
 
 ## **Trained models**
-- Sign detection
-- everyday objects
-- facial detection
+- Sign detection (Vilota trained model)
+- everyday objects (yolov5n pretrain model)
+- classroom objects (custom made trained model)
 
 ## **Object detection workflow**
 1. Decide object to detect
