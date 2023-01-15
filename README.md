@@ -51,15 +51,16 @@ label-studio # Will start the server at http://localhost:8080
 
 For Training - YoloV5([Github repo](https://github.com/ultralytics/yolov5))
 ```bash
-git clone https://github.com/ultralytics/yolov5.git
-cd yolov5
+git submodule update --init --force --recursive
+cd yolo/yolov5
 source <virtual name>/bin/activate
 pip install -r requirements.txt
+pip3 install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu116
 ```
 ## **How to run streamlit webui?**
 
 ```
-streamlit run 1_About_app.py
+streamlit run 1_About_App.py
 ```
 
 ## **Page functions**
